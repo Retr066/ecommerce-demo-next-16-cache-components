@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, use, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/stores/cart-store';
 import { createOrder } from '@/actions/orders';
@@ -13,12 +13,24 @@ import { toast } from '@/hooks/use-toast';
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, getTotalPrice, clearCart } = useCartStore();
+  const { items, getTotalPrice, clearCart,hasHydrated } = useCartStore();
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!hasHydrated) return; // ⬅️ espera localStorage
+
+    if (items.length === 0) {
+      router.push('/cart');
+    }
+  }, [hasHydrated, items.length, router]);
+
+
   if (items.length === 0) {
-    router.push('/cart');
-    return null;
+    return (
+      <div className="max-w-4xl mx-auto py-16 text-center">
+        <p>Cargando Productos Seleccionados...</p>
+      </div>
+    );
   }
 
   const total = getTotalPrice();
