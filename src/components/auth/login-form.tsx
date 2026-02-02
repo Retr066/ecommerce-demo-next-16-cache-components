@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useActionState, useEffect } from 'react';
 import Link from 'next/link';
 import { login } from '@/actions/auth';
 import { Button } from '@/components/ui/button';
@@ -11,30 +10,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from '@/hooks/use-toast';
 
 export function LoginForm() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [state, formAction, isPending] = useActionState(login, null);
 
-  async function handleSubmit(formData: FormData) {
-    setLoading(true);
-    try {
-      const result = await login(formData);
-      if (result?.error) {
-        toast({
-          title: 'Error',
-          description: result.error,
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
+  // Mostrar toast cuando hay error
+  useEffect(() => {
+    if (state?.error) {
       toast({
         title: 'Error',
-        description: 'Ocurrió un error inesperado',
+        description: state.error,
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
     }
-  }
+  }, [state]);
 
   return (
     <Card className="w-full max-w-md">
@@ -42,7 +29,7 @@ export function LoginForm() {
         <CardTitle>Iniciar Sesión</CardTitle>
         <CardDescription>Ingresa tus credenciales para acceder</CardDescription>
       </CardHeader>
-      <form action={handleSubmit}>
+      <form action={formAction}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -66,8 +53,8 @@ export function LoginForm() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </Button>
           <p className="text-sm text-foreground/60 text-center">
             ¿No tienes cuenta?{' '}

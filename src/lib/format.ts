@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-export function formatPrice(price: number | string): string {
+export function formatPrice(price: number | string ): string {
   const numPrice = typeof price === 'string' ? parseFloat(price) : price;
   return new Intl.NumberFormat('es-ES', {
     style: 'currency',

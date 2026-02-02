@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server';
 import { loginSchema, registerSchema } from '@/validations/auth';
 import { prisma } from '@/lib/prisma';
 
-export async function login(formData: FormData) {
+export async function login(prevState: { error: string } | null, formData: FormData) {
   const supabase = await createClient();
 
   const data = {
@@ -30,7 +30,7 @@ export async function login(formData: FormData) {
   redirect('/');
 }
 
-export async function register(formData: FormData) {
+export async function register(prevState: { error: string } | null, formData: FormData) {
   const supabase = await createClient();
 
   const data = {
@@ -56,8 +56,38 @@ export async function register(formData: FormData) {
     },
   });
 
+  console.log("error",error)
+
   if (error) {
+    // Mensajes de error más claros
+    if (error.message.includes('rate_limit')) {
+      return { error: 'Demasiados intentos. Espera unos minutos antes de intentar de nuevo.' };
+    }
+    if (error.message.includes('Email')) {
+      return { error: 'Este email ya está registrado o es inválido.' };
+    }
+    if (error.message.includes('Invalid API key')) {
+      return { error: 'Error de configuración. Verifica tus credenciales de Supabase.' };
+    }
     return { error: error.message };
+  }
+
+  // Crear usuario en la base de datos local
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await prisma.user.upsert({
+        where: { id: user.id },
+        update: {},
+        create: {
+          id: user.id,
+          email: user.email!,
+          name: data.name,
+        },
+      });
+    }
+  } catch (dbError) {
+    console.error('Error creating user in database:', dbError);
   }
 
   revalidatePath('/', 'layout');

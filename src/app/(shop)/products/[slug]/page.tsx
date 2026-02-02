@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export const revalidate = 3600; // ISR - 1 hora
+// export const revalidate = 3600; // ISR - 1 hora
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   const { slug } = await params;
@@ -65,7 +65,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
         <div className="space-y-6">
           <div>
             <Badge variant="secondary" className="mb-2">
-              {product.category.name}
+              {product.category?.name}
             </Badge>
             <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
             <div className="flex items-center gap-3 mb-4">

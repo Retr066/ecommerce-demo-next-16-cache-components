@@ -65,7 +65,11 @@ export function Navbar() {
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        onClick={() => logout()}
+                        onClick={async () => {
+                          
+                          await logout();
+                          // El redirect del logout recargará la página automáticamente
+                        }}
                         className="text-red-600 dark:text-red-400"
                       >
                         <LogOut className="h-4 w-4 mr-2" />

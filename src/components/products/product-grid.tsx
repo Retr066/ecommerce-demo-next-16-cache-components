@@ -1,16 +1,8 @@
 import { ProductCard } from './product-card';
+import { SerializedProduct } from '@/actions/products';
 
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number | any;
-  comparePrice?: number | null | any;
-  images: string[];
-  featured?: boolean;
-}
 
-export function ProductGrid({ products }: { products: Product[] }) {
+export function ProductGrid({ products }: { products: SerializedProduct[] }) {
   if (products.length === 0) {
     return (
       <div className="text-center py-12">

@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import Link from 'next/link';
 import { getUserOrders } from '@/actions/orders';
 import { formatPrice, formatDateTime } from '@/lib/format';

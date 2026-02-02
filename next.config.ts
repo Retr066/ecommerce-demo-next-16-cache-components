@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react'],
   },
+  cacheComponents: true,
 
   // Headers de seguridad
   async headers() {

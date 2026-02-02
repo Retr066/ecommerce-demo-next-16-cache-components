@@ -1,7 +1,15 @@
+
 import Link from 'next/link';
 import { Store } from 'lucide-react';
+import { Suspense } from 'react';
 
-export function Footer() {
+export async function Footer() {
+    "use cache"
+  // const timeAgo = performance.now();
+  // console.log(tim)
+  // Acceder a headers() para hacer el componente dinámico (requerido por Next.js 16)
+  // await headers();
+
   return (
     <footer className="border-t border-foreground/10 bg-background mt-auto">
       <div className="container mx-auto px-4 py-8">
@@ -66,7 +74,9 @@ export function Footer() {
         </div>
 
         <div className="border-t border-foreground/10 mt-8 pt-8 text-center text-sm text-foreground/60">
-          <p>&copy; {new Date().getFullYear()} TiendaNext. Todos los derechos reservados.</p>
+          <p>
+            &copy; {new Date().getFullYear()} TiendaNext. Todos los derechos reservados.
+          </p>
           <p className="mt-2">
             Hecho con Next.js 16, Supabase y Prisma
           </p>

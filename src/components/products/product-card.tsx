@@ -5,17 +5,19 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AddToCartButton } from './add-to-cart-button';
 
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number | null;
-  images: string[];
-  featured?: boolean;
+export interface ProductCardProps {
+  product: {
+    id: string;
+    name: string;
+    slug: string;
+    price: number;
+    comparePrice: number | null;
+    images: string[];
+    featured: boolean;
+  };
 }
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product }: ProductCardProps) {
   const hasDiscount = product.comparePrice && product.comparePrice > product.price;
 
   return (
@@ -60,7 +62,7 @@ export function ProductCard({ product }: { product: Product }) {
             productId: product.id,
             name: product.name,
             slug: product.slug,
-            price: Number(product.price),
+            price: product.price,
             image: product.images[0],
             quantity: 1,
           }}

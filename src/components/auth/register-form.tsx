@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { register } from '@/actions/auth';
 import { Button } from '@/components/ui/button';
@@ -10,37 +10,27 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from '@/hooks/use-toast';
 
 export function RegisterForm() {
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(formData: FormData) {
-    setLoading(true);
-    try {
-      const result = await register(formData);
-      if (result?.error) {
+   const [state, formAction, isPending] = useActionState(register, null);
+  
+    // Mostrar toast cuando hay error
+    useEffect(() => {
+      if (state?.error) {
         toast({
           title: 'Error',
-          description: result.error,
+          description: state.error,
           variant: 'destructive',
         });
       }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Ocurrió un error inesperado',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  }
+    }, [state]);
 
   return (
+    
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Crear Cuenta</CardTitle>
         <CardDescription>Regístrate para empezar a comprar</CardDescription>
       </CardHeader>
-      <form action={handleSubmit}>
+      <form action={formAction}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nombre</Label>
@@ -84,8 +74,8 @@ export function RegisterForm() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending ? 'Creando cuenta...' : 'Crear Cuenta'}
           </Button>
           <p className="text-sm text-foreground/60 text-center">
             ¿Ya tienes cuenta?{' '}
